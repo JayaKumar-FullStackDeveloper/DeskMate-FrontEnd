@@ -23,49 +23,37 @@ interface LoginFormInputs {
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>();
+
+  const {
+    register,
+    handleSubmit,
+  } = useForm<LoginFormInputs>();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  // Toggle password visibility
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
-
-  // Handle form submission
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+    console.log("Hi this is ");
     try {
       const response = await doLogin(data);
-      if (response) {
-        navigate("/home");
-      } else {
-        setErrorMessage("Invalid email or password.");
+      console.log("Login Response = ", response);
+      if (response) navigate("/home");
+      else {
+        alert("Authentication in Invalid");
       }
     } catch (error) {
-      console.error("Login Error:", error);
-      setErrorMessage("Authentication failed. Please try again.");
+      console.error("Sign  12334w Error:", error);
     }
   };
-
   return (
     <div className="h-screen bg-[#1E1B3A] text-white flex flex-col">
       <Navbar />
       <div className="flex items-center justify-center lg:px-16 px-10 h-screen">
-        <div className="w-[500px] bg-[var(--primary)] rounded-lg border border-[#555597] shadow-lg">
-          <div className="py-14 px-8 w-full">
-            <h4 className="relative text-center text-3xl font-bold text-white mb-6">
-              Sign In
-              <span className="block w-48 h-[3px] bg-[#F85E00] mx-auto mt-2"></span>
+        <div className="w-[500px] bg-[var(--primary)] rounded-lg border border-[#555597]">
+          <div className="py-14 px-8 shadow-lg rounded-lg w-full">
+            <h4 className="relative text-center text-3xl  font-bold text-white mb-4 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-5 after:w-48 after:h-[3px] after:bg-[#F85E00]">
+              Create Account
             </h4>
-
-            {errorMessage && (
-              <p className="text-red-500 text-center mb-4">{errorMessage}</p>
-            )}
-
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              {/* Email Input */}
-              <div className="relative">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 pt-8 w-full">
+              <div className="relative w-ful">
                 <MailOutlinedIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white" />
                 <input
                   type="email"
@@ -77,71 +65,67 @@ const Login: React.FC = () => {
                       message: "Invalid email format",
                     },
                   })}
-                  className="w-full text-white bg-transparent border border-gray-400 rounded-md py-3 pl-12 px-5 focus:outline-none focus:ring-2 focus:ring-[#F85E00]"
+                  className="w-full text-white rounded-md py-3 pl-12 px-5 focus:outline-none focus:ring-1 focus:ring-[#F85E00]"
                 />
-                {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>}
               </div>
-
-              {/* Password Input */}
-              <div className="relative">
+              <div className="relative w-ful">
                 <LockOutlinedIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white" />
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   {...register("password", {
                     required: "Password is required",
-                    minLength: { value: 6, message: "Minimum 6 characters required" },
+                    minLength: {
+                      value: 6,
+                      message: "Minimum 6 characters required",
+                    },
                   })}
-                  className="w-full text-white bg-transparent border border-gray-400 rounded-md py-3 pl-12 pr-10 focus:outline-none focus:ring-2 focus:ring-[#F85E00]"
+                  className="w-full text-white rounded-md py-3 pl-12 pr-10 focus:outline-none focus:ring-1 focus:ring-[#F85E00]"
                 />
-                <IconButton
-                  onClick={togglePasswordVisibility}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                >
-                  {showPassword ? (
-                    <Visibility className="text-gray-200" fontSize="small" />
-                  ) : (
-                    <VisibilityOff className="text-white" fontSize="small" />
-                  )}
-                </IconButton>
-                {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>}
+                <div className="absolute right-5 top-1/2 transform -translate-y-1/2">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? (
+                      <Visibility className="text-gray-200" fontSize="small" />
+                    ) : (
+                      <VisibilityOff className="text-white" fontSize="small" />
+                    )}
+                  </IconButton>
+                </div>
               </div>
-
-              {/* Remember Me & Forgot Password */}
               <div className="flex justify-between items-center px-2">
                 <FormControlLabel
-                  control={
-                    <Checkbox
-                      {...register("rememberMe")}
-                      size="small"
-                      sx={{ color: "white", "&.Mui-checked": { color: "#F85E00" } }}
-                    />
-                  }
+                  control={<Checkbox {...register("rememberMe")} size="small" sx={{
+                    color: "var(--white)",
+                    "&.Mui-checked": {
+                      color: "var(--weight)",
+                    },
+                  }} />}
                   label="Remember Me"
                 />
                 <button
                   type="button"
-                  className="text-[#F16A23] hover:underline text-sm"
+                  className="text-blue-500 hover:underline text-sm"
+                  style={{ color: "#F16A23" }}
                   onClick={() => navigate("/forgot-password")}
                 >
                   Forgot Password?
                 </button>
               </div>
-
-              {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-[#F85E00] p-3 rounded-lg font-medium text-lg text-white hover:bg-[#d95b00]"
+                className="w-full bg-[var(--weight)] p-2 rounded-lg font-medium text-lg"
               >
                 Login
               </button>
-
-              {/* Sign Up Link */}
-              <div className="flex items-center justify-center space-x-2 mt-4">
+              <div className="flex items-center justify-center space-x-2 mt-2">
                 <Typography variant="body2">Don't have an account?</Typography>
                 <Button
                   variant="text"
-                  sx={{ color: "#F85E00" }}
+                  color="primary"
+                  sx={{ color: "var(--weight)" }}
                   onClick={() => navigate("/signup")}
                 >
                   Sign Up
