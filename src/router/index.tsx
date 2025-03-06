@@ -15,7 +15,7 @@ const RouterComponent: React.FC = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/create-workarea" element={<CreateWorkArea />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/employeeList" element={<EmployeeList />} />
+        <Route path="/employeeList" element={<EmployeeList closePopup={() => { /* define closePopup function here */ }} />} />
       </Routes>
     </BrowserRouter>
   );
